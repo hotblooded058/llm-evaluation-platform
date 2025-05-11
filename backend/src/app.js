@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const path = require('path');
+require('dotenv').config();
 
 // Import routes
 const datasetRoutes = require('./routes/dataset.routes');
@@ -40,7 +41,7 @@ app.use((err, req, res, next) => {
 });
 
 // Database connection
-mongoose.connect('mongodb://localhost:27017/llm-evaluation', {
+mongoose.connect(process.env.MONGODB_URI, {
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
 })

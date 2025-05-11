@@ -46,7 +46,7 @@ npm install
 3. Create a `.env` file in the backend directory with the following variables:
 ```
 PORT=5000
-MONGODB_URI=mongodb://localhost:27017/llm-evaluation
+MONGODB_URI= MONGODB_URI_KEY
 GEMINI_API_KEY=your_gemini_api_key
 GROQ_API_KEY=your_groq_api_key
 ```
