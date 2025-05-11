@@ -1,0 +1,285 @@
+openapi: 3.0.0
+info:
+  title: LLM Evaluation Platform API
+  version: 1.0.0
+  description: API documentation for the LLM Evaluation Platform
+
+servers:
+  - url: http://localhost:5000/api
+    description: Development server
+
+paths:
+  /datasets:
+    post:
+      summary: Upload a new dataset
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Dataset created successfully
+    get:
+      summary: Get all datasets
+      responses:
+        '200':
+          description: List of datasets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dataset'
+
+  /datasets/{id}:
+    get:
+      summary: Get dataset by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dataset details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataset'
+    delete:
+      summary: Delete dataset
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dataset deleted successfully
+
+  /prompts:
+    post:
+      summary: Create a new prompt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Prompt'
+      responses:
+        '201':
+          description: Prompt created successfully
+    get:
+      summary: Get all prompts
+      responses:
+        '200':
+          description: List of prompts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Prompt'
+
+  /prompts/{id}:
+    get:
+      summary: Get prompt by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Prompt details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prompt'
+    put:
+      summary: Update prompt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Prompt'
+      responses:
+        '200':
+          description: Prompt updated successfully
+    delete:
+      summary: Delete prompt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Prompt deleted successfully
+
+  /evaluations:
+    post:
+      summary: Start a new evaluation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                datasetId:
+                  type: string
+                promptId:
+                  type: string
+      responses:
+        '201':
+          description: Evaluation started successfully
+    get:
+      summary: Get all evaluations
+      responses:
+        '200':
+          description: List of evaluations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Evaluation'
+
+  /evaluations/{id}:
+    get:
+      summary: Get evaluation by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Evaluation details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evaluation'
+
+components:
+  schemas:
+    Dataset:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        columns:
+          type: array
+          items:
+            type: string
+        rowCount:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Prompt:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        template:
+          type: string
+        variables:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+              required:
+                type: boolean
+        version:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Evaluation:
+      type: object
+      properties:
+        _id:
+          type: string
+        dataset:
+          $ref: '#/components/schemas/Dataset'
+        prompt:
+          $ref: '#/components/schemas/Prompt'
+        status:
+          type: string
+          enum: [pending, in_progress, completed, failed]
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              rowIndex:
+                type: number
+              generatedPrompt:
+                type: string
+              responses:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    model:
+                      type: string
+                      enum: [groq, gemini]
+                    response:
+                      type: string
+                    scores:
+                      type: object
+                      properties:
+                        correctness:
+                          type: number
+                        faithfulness:
+                          type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time 
