@@ -79,6 +79,22 @@ The application will be available at `http://localhost:3000`
 3. Run an evaluation by selecting a dataset and prompt
 4. View the evaluation results and compare LLM responses
 
-## License
+## Screenshots
+![image](https://github.com/user-attachments/assets/dbc8e4e1-213c-45ee-968f-3c6df4e6137b)
 
-MIT 
+![image](https://github.com/user-attachments/assets/d9ba919f-cc69-4a8e-8cff-464fb2158b76)
+
+![image](https://github.com/user-attachments/assets/bb920cc1-6f03-4ea6-8137-266bac068c73)
+
+![image](https://github.com/user-attachments/assets/24ebb4a5-a650-426d-8aa7-bad1597aab16)
+
+![image](https://github.com/user-attachments/assets/a63581b5-7153-4766-8247-a79189879429)
+
+![image](https://github.com/user-attachments/assets/e1e6d0ff-854c-4909-8c43-74d6c679f56a)
+
+![image](https://github.com/user-attachments/assets/252516a8-fe6f-4bb6-832d-f8ee26f1fb0d)
+
+![image](https://github.com/user-attachments/assets/246656ec-dd38-4ce0-8c9b-9f7f00b98893)
+
+![image](https://github.com/user-attachments/assets/4faaacf2-e5a6-4f94-8845-0168f978aa81)
+
