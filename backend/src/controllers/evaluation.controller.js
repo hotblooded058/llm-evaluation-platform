@@ -178,7 +178,7 @@ async function processEvaluation(evaluationId) {
 
         const modelResponses = [];
 
-        // Step 2: Use Groq to evaluate both responses
+        // Step 2: Use Gemini to evaluate both responses
         if (responses.gemini && responses.gemini !== 'Failed to get response') {
           try {
             const scores = await evaluateResponse(responses.gemini, generatedPrompt, record);
