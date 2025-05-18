@@ -6,10 +6,15 @@ require('dotenv').config();
 // Initialize LLM clients
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 let groq = null;
+let groq2 = null;
 
 // Initialize Groq only if API key is available
 if (process.env.GROQ_API_KEY) {
   groq = new Groq({
+    apiKey: process.env.GROQ_API_KEY,
+  });
+
+  groq2 = new Groq({
     apiKey: process.env.GROQ_API_KEY,
   });
 }
@@ -82,13 +87,44 @@ async function getGroqResponse(prompt) {
   }
 }
 
+
+async function getGroqResponse2(prompt) {
+  if (!groq) {
+    console.log('Groq API not configured');
+    throw new Error('Groq API key not configured');
+  }
+
+  try {
+    await rateLimiter.wait();
+    console.log('Getting response from Groq...');
+    const completion = await groq.chat.completions.create({
+      messages: [{ role: "user", content: prompt }],
+      model: "llama-3.1-8b-instant",
+      temperature: 0.7,
+      max_tokens: 1024,
+    });
+    
+    const response = completion.choices[0].message.content;
+    if (!response || response.trim() === '') {
+      console.error('Empty response from Groq');
+      throw new Error('Empty response from Groq');
+    }
+    
+    console.log('Groq response received successfully');
+    return response;
+  } catch (error) {
+    console.error('Groq API error:', error);
+    throw new Error(`Failed to get response from Groq: ${error.message}`);
+  }
+}
 // Get responses from all LLMs in parallel
 async function getAllResponses(prompt) {
   try {
     console.log('Getting responses from all LLMs...');
     const responses = {
       gemini: null,
-      groq: null
+      groq: null,
+      groq2: null
     };
 
     // Get Gemini response
@@ -113,6 +149,21 @@ async function getAllResponses(prompt) {
       console.log('Groq API not configured, skipping Groq response');
       responses.groq = 'Groq API not configured';
     }
+
+    if (groq2) {
+      try {
+        console.log('Attempting to get Groq2 response...');
+        responses.groq2 = await getGroqResponse2(prompt);
+      } catch (error) {
+        console.warn('Failed to get Groq response:', error.message);
+        responses.groq2 = `Failed to get response: ${error.message}`;
+      }
+    } else {
+      console.log('Groq API not configured, skipping Groq response');
+      responses.groq2 = 'Groq API not configured';
+    }
+
+
 
     console.log('All LLM responses received');
     return responses;
@@ -250,5 +301,6 @@ module.exports = {
   getGroqResponse,
   evaluateResponse,
   evaluateResponseGroq,
-  getAllResponses
+  getAllResponses,
+  getGroqResponse2
 }; 

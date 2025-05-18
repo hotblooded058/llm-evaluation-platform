@@ -217,6 +217,25 @@ async function processEvaluation(evaluationId) {
           }
         }
 
+        if (responses.groq2 && responses.groq2 !== 'Groq2 API not configured' && responses.groq2 !== 'Failed to get response') {
+          try {
+            const scores = await evaluateResponse(responses.groq2, generatedPrompt, record);
+            modelResponses.push({
+              model: 'groq2',
+              response: responses.groq2,
+              scores: scores
+            });
+          } catch (error) {
+            console.error(`Error evaluating Groq response:`, error);
+            modelResponses.push({
+              model: 'groq2',
+              response: responses.groq2,
+              scores: { correctness: 1, faithfulness: 1 },
+              error: error.message
+            });
+          }
+        }
+
         evaluation.results.push({
           rowIndex: i,
           generatedPrompt,

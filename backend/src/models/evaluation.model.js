@@ -24,7 +24,7 @@ const evaluationSchema = new mongoose.Schema({
       model: {
         type: String,
         required: true,
-        enum: ['groq', 'gemini']
+        enum: ['groq', 'gemini', 'groq2']
       },
       response: {
         type: String,
