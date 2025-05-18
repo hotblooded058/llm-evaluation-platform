@@ -75,7 +75,8 @@ const EvaluationResults: React.FC<EvaluationResultsProps> = ({ results, datasetD
   const calculateAggregateMetrics = () => {
     const metrics = {
       gemini: { correctness: 0, faithfulness: 0, count: 0 },
-      groq: { correctness: 0, faithfulness: 0, count: 0 }
+      groq: { correctness: 0, faithfulness: 0, count: 0 },
+      groq2: { correctness: 0, faithfulness: 0, count: 0 }
     };
 
     results.forEach(result => {
@@ -88,6 +89,10 @@ const EvaluationResults: React.FC<EvaluationResultsProps> = ({ results, datasetD
           metrics.groq.correctness += response.scores.correctness;
           metrics.groq.faithfulness += response.scores.faithfulness;
           metrics.groq.count++;
+        } else if(response.model === 'groq2') {
+          metrics.groq2.correctness += response.scores.correctness;
+          metrics.groq2.faithfulness += response.scores.faithfulness;
+          metrics.groq2.count++;
         }
       });
     });
@@ -100,6 +105,10 @@ const EvaluationResults: React.FC<EvaluationResultsProps> = ({ results, datasetD
       groq: {
         correctness: metrics.groq.count ? (metrics.groq.correctness / metrics.groq.count).toFixed(2) : 0,
         faithfulness: metrics.groq.count ? (metrics.groq.faithfulness / metrics.groq.count).toFixed(2) : 0
+      },
+      groq2: {
+        correctness: metrics.groq2.count ? (metrics.groq2.correctness / metrics.groq2.count).toFixed(2) : 0,
+        faithfulness: metrics.groq2.count ? (metrics.groq2.faithfulness / metrics.groq2.count).toFixed(2) : 0
       }
     };
   };
@@ -133,6 +142,19 @@ const EvaluationResults: React.FC<EvaluationResultsProps> = ({ results, datasetD
             <Chip
               label={`Faithfulness: ${aggregateMetrics.groq.faithfulness}`}
               color={getScoreColor(Number(aggregateMetrics.groq.faithfulness))}
+            />
+          </Box>
+        </Paper>
+        <Paper sx={{ p: 2, flex: 1 }}>
+          <Typography variant="h6" gutterBottom>Groq2 Aggregate Scores</Typography>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Chip
+              label={`Correctness: ${aggregateMetrics.groq2.correctness}`}
+              color={getScoreColor(Number(aggregateMetrics.groq2.correctness))}
+            />
+            <Chip
+              label={`Faithfulness: ${aggregateMetrics.groq2.faithfulness}`}
+              color={getScoreColor(Number(aggregateMetrics.groq2.faithfulness))}
             />
           </Box>
         </Paper>
